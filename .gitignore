@@ -53,4 +53,3 @@ Thumbs.db
 .env
 .env.*.local
 .env.local
-.pull_request_template.md
