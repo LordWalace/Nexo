@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     APP_SLUG: str = "nexo"
     APP_ENV: str = "development"
     DEBUG: bool = True
+    BACKEND_CORS_ORIGINS: list[str] = ["*"]
 
     DATABASE_URL: str
     REDIS_URL: str

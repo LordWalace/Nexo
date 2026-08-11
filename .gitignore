@@ -4,11 +4,15 @@ dist/
 build/
 .expo/
 .next/
+coverage/
+.npm/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+.tox/
 .pytest_cache/
 .coverage
 htmlcov/
@@ -18,12 +22,34 @@ env/
 ENV/
 .mypy_cache/
 .ruff_cache/
-alembic/versions/*.py
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs
+*.log
+logs/
+
+# Secrets
+*.pem
+*.key
+secrets.json
+
+# IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
 
 # OS
 .DS_Store
+._*
 Thumbs.db
 
 # Env
 .env
+.env.*.local
 .env.local

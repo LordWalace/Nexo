@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import get_password_hash
 from app.domain.exceptions.user import DuplicateEmailException, UserNotFoundException
+from app.domain.repositories.user_repository import IUserRepository
 from app.infrastructure.database.models.user import User
-from app.infrastructure.database.repositories.user_repository import UserRepository
 from app.schemas.user import UserCreate, UserUpdate
 
 
 class UserUseCases:
-    def __init__(self, repository: UserRepository, session: AsyncSession):
+    def __init__(self, repository: IUserRepository, session: AsyncSession):
         self.repository = repository
         self.session = session
 

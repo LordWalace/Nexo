@@ -7,7 +7,7 @@ from alembic import context
 from app.core.config import settings
 from app.infrastructure.database.base import Base
 
-import app.infrastructure.database.models.user
+import app.infrastructure.database.models  # noqa: F401
 
 config = context.config
 

@@ -1,39 +1,78 @@
-# Study App - Monorepo
+# Nexo Monorepo
 
-Este é o monorepo do aplicativo de planejamento e acompanhamento de atividades, contendo o backend em FastAPI, aplicativo mobile em React Native (Expo) e a base para a futura aplicação Web.
+Bem-vindo ao **Nexo**, um aplicativo de gerenciamento completo e moderno.
+
+O projeto está dividido em aplicações (Frontend/Mobile) e serviços (Backend), todos organizados em um único repositório para facilitar o desenvolvimento e a manutenção.
 
 ## Estrutura do Projeto
 
-Abaixo a visão de alto nível do monorepo:
-
-```text
-study-app/
-├── apps/               # Aplicações Frontend
-│   ├── mobile/         # App React Native (Expo)
-│   └── web/            # Futura aplicação Web (Vite/React)
-├── backend/            # Backend API (Python/FastAPI)
-├── packages/           # Pacotes compartilhados (tipos, eslint-config)
-├── tests/              # Testes E2E e de integração do monorepo
-├── infrastructure/     # Configurações Docker, Nginx e scripts
-├── .github/            # Pipelines CI/CD (GitHub Actions) e Templates
-└── docs/               # Documentação técnica
+```bash
+nexo/
+├── apps/
+│   ├── frontend/   # Aplicação Web (React / Next.js)
+│   └── mobile/     # Aplicação Mobile (React Native / Expo)
+├── backend/        # API Restful (FastAPI, Python, PostgreSQL)
+├── packages/       # Bibliotecas e componentes compartilhados (se houver)
+├── infrastructure/ # Configurações de Deploy e Containers (Docker, etc)
+├── tests/          # Testes E2E globais (se aplicável)
+└── docs/           # Documentações gerais adicionais
 ```
 
-## Como Executar Localmente
+---
 
-Consulte a documentação em:
-- [Configuração Windows](docs/development/setup-windows.md)
-- [Configuração Linux](docs/development/setup-linux.md)
-- [Scripts e Comandos](docs/development/scripts.md)
+## Guias Específicos (Documentação por Módulo)
 
-Você precisará de Docker e Python 3.11+. As dependências serão instaladas via pip em um ambiente isolado (`.venv`).
+Para saber como baixar as dependências, configurar o ambiente e rodar cada parte do sistema isoladamente, leia os READMEs específicos de cada módulo abaixo:
 
-## Pipeline de Pull Request (CI/CD)
+- **Quer saber mais sobre o Backend?**  
+  [Leia o README do Backend](./backend/README.md)
 
-Ao abrir um PR para as branches `main` ou `develop`, o pipeline automatizado será acionado (`.github/workflows/pull-request.yml`).
-Ele executa checks rigorosos de Ruff, MyPy, Pytest e Pip Audit usando Ubuntu e Python 3.11 nativo.
+- **Quer saber mais sobre o aplicativo Mobile?**  
+  [Leia o README do Mobile](./apps/mobile/README.md)
 
-## Configurações Manuais Pendentes
+- **Quer saber mais sobre o Frontend?**  
+  [Leia o README do Frontend](./apps/frontend/README.md)
 
-1. **Credenciais do Google OAuth:** Preencher no `.env` (`GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET`).
-2. **Branch Protection:** Configurar regras para main e develop.
+---
+
+## Comandos Padrões Globais
+
+Na raiz do projeto, você poderá rodar comandos úteis, especialmente se utilizar ferramentas como o Docker (via `docker-compose`).
+
+- **Iniciar Serviços Base (Banco de Dados, Redis, etc):**
+  ```bash
+  docker compose up -d
+  ```
+
+- **Parar Serviços Base:**
+  ```bash
+  docker compose down
+  ```
+
+*Aviso: Para rodar comandos específicos de cada projeto (como `npm start` ou `pytest`), você deve navegar até a respectiva pasta (ex: `cd backend`).*
+
+---
+
+## Padrões de Código e Diretrizes
+
+### Convenções Gerais
+1. **Idioma**: O código fonte (variáveis, classes, métodos) deve ser escrito em **Inglês**. Comentários e documentações mais robustas podem ser em português (como este README), mas priorize o inglês no código.
+2. **Nomenclatura**:
+   - `snake_case` para variáveis e funções em Python.
+   - `camelCase` para variáveis e funções em TypeScript/JavaScript.
+   - `PascalCase` para Classes e Componentes React.
+   - `kebab-case` para nomes de arquivos no frontend (ex: `user-profile.tsx`).
+3. **Formatação e Linting**: O projeto adota ferramentas de lint automáticas. Certifique-se de executar `ruff check .` no backend e `eslint` no frontend antes de fazer commit.
+
+### Como criar e revisar PRs (Pull Requests)
+1. **Branching**:
+   - Nunca faça commits direto na `main`.
+   - Crie branches com padrões semânticos. Exemplos: `feature/adicionar-login`, `fix/erro-banco`, `chore/atualizar-deps`.
+2. **Commits**:
+   - Use [Conventional Commits](https://www.conventionalcommits.org/).
+   - Exemplos: `feat: add user authentication`, `fix: resolve crash on mobile header`, `docs: update readme`.
+3. **Revisão de PR**:
+   - Todo PR deve ter um título claro sobre o que foi resolvido.
+   - Caso inclua alterações visuais no frontend/mobile, adicione screenshots ou vídeos ao PR.
+   - Deve ser aprovado por pelo menos 1 revisor.
+   - O CI (Lint e Testes) deve estar com status **verde (passando)**.

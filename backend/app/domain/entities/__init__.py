@@ -1,13 +1,12 @@
-from datetime import datetime
-from typing import Optional
+from datetime import UTC, datetime
 
 from pydantic import BaseModel, ConfigDict
 
 
 class BaseEntity(BaseModel):
     id: str | None = None
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(UTC)
+    updated_at: datetime = datetime.now(UTC)
     deleted_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,8 +1,8 @@
 import uuid
+from typing import Any
 
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
-from typing import Any
 
 
 class AppException(Exception):
