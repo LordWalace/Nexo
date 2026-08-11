@@ -13,12 +13,10 @@ class MaterialUseCases:
         self.repository = repository
         self.session = session
 
-    async def create_material(self, user_id: UUID, material_in: MaterialCreate) -> Material:
-        material = Material(
-            name=material_in.name,
-            url=material_in.url,
-            user_id=user_id
-        )
+    async def create_material(
+        self, user_id: UUID, material_in: MaterialCreate
+    ) -> Material:
+        material = Material(name=material_in.name, url=material_in.url, user_id=user_id)
         await self.repository.create(material)
         await self.session.commit()
         await self.session.refresh(material)
@@ -27,7 +25,9 @@ class MaterialUseCases:
     async def get_all_materials(self, user_id: UUID) -> list[Material]:
         return await self.repository.get_all_by_user(user_id)
 
-    async def update_material(self, material_id: UUID, user_id: UUID, material_in: MaterialUpdate) -> Material:
+    async def update_material(
+        self, material_id: UUID, user_id: UUID, material_in: MaterialUpdate
+    ) -> Material:
         material = await self.repository.get_by_id(material_id, user_id)
         if not material:
             raise AppException(
@@ -35,12 +35,12 @@ class MaterialUseCases:
                 message="Material não encontrado.",
                 status_code=404,
             )
-        
+
         if material_in.name is not None:
             material.name = material_in.name
         if material_in.url is not None:
             material.url = material_in.url
-            
+
         await self.repository.update(material)
         await self.session.commit()
         await self.session.refresh(material)
@@ -54,6 +54,6 @@ class MaterialUseCases:
                 message="Material não encontrado.",
                 status_code=404,
             )
-            
+
         await self.repository.soft_delete(material)
         await self.session.commit()

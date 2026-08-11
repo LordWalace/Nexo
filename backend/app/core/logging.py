@@ -12,7 +12,7 @@ class MaskingFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         if isinstance(record.msg, str):
-            record.msg = self.pattern.sub(r'\1=***', record.msg)
+            record.msg = self.pattern.sub(r"\1=***", record.msg)
         return True
 
 

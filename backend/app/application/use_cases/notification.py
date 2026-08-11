@@ -13,11 +13,13 @@ class NotificationUseCases:
         self.repository = repository
         self.session = session
 
-    async def create_notification(self, user_id: UUID, notification_in: NotificationCreate) -> Notification:
+    async def create_notification(
+        self, user_id: UUID, notification_in: NotificationCreate
+    ) -> Notification:
         notification = Notification(
             user_id=user_id,
             title=notification_in.title,
-            message=notification_in.message
+            message=notification_in.message,
         )
         await self.repository.create(notification)
         await self.session.commit()
@@ -35,9 +37,9 @@ class NotificationUseCases:
                 message="Notificação não encontrada.",
                 status_code=404,
             )
-        
+
         notification.is_read = True
-            
+
         await self.repository.update(notification)
         await self.session.commit()
         await self.session.refresh(notification)

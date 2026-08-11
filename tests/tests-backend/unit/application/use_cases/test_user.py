@@ -2,14 +2,13 @@ from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
 from app.application.use_cases.user import UserUseCases
 from app.core.exceptions import AppException
 from app.core.security import create_access_token, decode_access_token
 from app.domain.exceptions.user import DuplicateEmailException, UserNotFoundException
 from app.infrastructure.database.models.user import User
 from app.schemas.user import UserCreate
+from pydantic import ValidationError
 
 
 class MockUserRepository:
@@ -116,6 +115,7 @@ async def test_soft_delete_and_restore(mock_repo, mock_session):
 @pytest.mark.asyncio
 async def test_update_user(mock_repo, mock_session):
     from app.schemas.user import UserUpdate
+
     use_cases = UserUseCases(repository=mock_repo, session=mock_session)
     user_in = UserCreate(name="Test", email="test@example.com", password="password123")
     user = await use_cases.create_user(user_in)
@@ -130,16 +130,19 @@ async def test_update_user(mock_repo, mock_session):
 @pytest.mark.asyncio
 async def test_create_user_integrity_error(mock_repo, mock_session):
     from sqlalchemy.exc import IntegrityError
-    
+
     class MockSessionIntegrity(MockSession):
         async def commit(self):
             raise IntegrityError("mock", "mock", "mock")
 
     use_cases = UserUseCases(repository=mock_repo, session=MockSessionIntegrity())
-    user_in = UserCreate(name="Test2", email="test2@example.com", password="password123")
-    
+    user_in = UserCreate(
+        name="Test2", email="test2@example.com", password="password123"
+    )
+
     with pytest.raises(DuplicateEmailException):
         await use_cases.create_user(user_in)
+
 
 def test_user_schema_validation():
     # Validação de email (falha)

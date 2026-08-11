@@ -20,16 +20,17 @@ class MaterialRepository(IMaterialRepository):
         stmt = select(Material).where(
             Material.id == material_id,
             Material.user_id == user_id,
-            Material.deleted_at.is_(None)
+            Material.deleted_at.is_(None),
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
     async def get_all_by_user(self, user_id: UUID) -> list[Material]:
-        stmt = select(Material).where(
-            Material.user_id == user_id,
-            Material.deleted_at.is_(None)
-        ).order_by(Material.created_at.desc())
+        stmt = (
+            select(Material)
+            .where(Material.user_id == user_id, Material.deleted_at.is_(None))
+            .order_by(Material.created_at.desc())
+        )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

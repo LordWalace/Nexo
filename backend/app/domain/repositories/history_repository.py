@@ -10,7 +10,9 @@ class IHistoryRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, period_id: UUID, user_id: UUID) -> ActivityExecutionPeriod | None:
+    async def get_by_id(
+        self, period_id: UUID, user_id: UUID
+    ) -> ActivityExecutionPeriod | None:
         pass
 
     @abstractmethod

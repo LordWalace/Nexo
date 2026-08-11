@@ -1,25 +1,29 @@
+import asyncio
 import os
 import sys
-import asyncio
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-os.environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/nexo_db"
+os.environ["DATABASE_URL"] = (
+    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/nexo_db"
+)
 os.environ["REDIS_URL"] = "redis://localhost:6379/0"
-os.environ["JWT_SECRET_KEY"] = "testsecret_must_be_32_bytes_long_for_security_algorithms"
+os.environ["JWT_SECRET_KEY"] = (
+    "testsecret_must_be_32_bytes_long_for_security_algorithms"
+)
 os.environ["STORAGE_ENDPOINT"] = "http://localhost:9000"
 os.environ["STORAGE_ACCESS_KEY"] = "test"
 os.environ["STORAGE_SECRET_KEY"] = "test"
 os.environ["STORAGE_BUCKET"] = "test"
 os.environ["APP_SLUG"] = "nexo"
 
-import pytest
 from collections.abc import AsyncGenerator
-from httpx import ASGITransport, AsyncClient
 
+import pytest
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.main import app
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest.fixture(autouse=True)

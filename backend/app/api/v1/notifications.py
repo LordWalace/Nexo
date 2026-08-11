@@ -15,7 +15,9 @@ from app.schemas.notification import NotificationCreate, NotificationResponse
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 
-@router.post("/", response_model=NotificationResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", response_model=NotificationResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_notification(
     notification_in: NotificationCreate,
     current_user: User = Depends(get_current_user),
