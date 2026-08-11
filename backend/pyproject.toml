@@ -1,0 +1,27 @@
+[tool.ruff.lint]
+extend-ignore = ["B008", "BLE001"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "alembic"
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = [
+    "^alembic/",
+]
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=app --cov-report=term-missing"
+testpaths = ["tests"]
+asyncio_mode = "auto"

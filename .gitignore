@@ -1,0 +1,29 @@
+# Node
+node_modules/
+dist/
+build/
+.expo/
+.next/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+ENV/
+.mypy_cache/
+.ruff_cache/
+alembic/versions/*.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
