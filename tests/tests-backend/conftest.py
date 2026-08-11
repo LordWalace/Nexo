@@ -6,7 +6,7 @@ if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 os.environ["DATABASE_URL"] = (
-    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/nexo_db"
+    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/nexo_db"
 )
 os.environ["REDIS_URL"] = "redis://localhost:6379/0"
 os.environ["JWT_SECRET_KEY"] = (

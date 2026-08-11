@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - develop
-      - 'test/*'
+      - "test/*"
+
   pull_request:
     branches:
       - main
@@ -47,12 +48,12 @@ jobs:
           --health-retries=5
 
     env:
-      APP_NAME: Nexo API
+      APP_NAME: "Nexo API"
       APP_SLUG: nexo
       APP_ENV: test
       DEBUG: "true"
-      DATABASE_URL: postgresql+asyncpg://nexo_user:nexo_password@localhost:5432/nexo_db
-      REDIS_URL: redis://localhost:6379/0
+      DATABASE_URL: "postgresql+asyncpg://nexo_user:nexo_password@localhost:5432/nexo_db"
+      REDIS_URL: "redis://localhost:6379/0"
       JWT_SECRET_KEY: test-secret
       JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "15"
       JWT_REFRESH_TOKEN_EXPIRE_DAYS: "30"
