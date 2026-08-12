@@ -1,53 +1,33 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
 interface AuthState {
-  localUserId: string | null;
-  accessToken: string | null;
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  initialize: () => Promise<void>;
-  login: (token: string) => Promise<void>;
-  logout: () => Promise<void>;
+  userId: string;
+  name: string;
+  email: string | null;
+  isAnonymous: boolean;
+  setProfile: (name: string, email?: string | null) => void;
+  login: (email: string, name: string) => void;
+  logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  localUserId: null,
-  accessToken: null,
-  isLoggedIn: false,
-  isLoading: true,
-  initialize: async () => {
-    try {
-      // 1. Load or create localUserId
-      let localId = await AsyncStorage.getItem("@nexo_local_user_id");
-      if (!localId) {
-        localId = uuidv4();
-        await AsyncStorage.setItem("@nexo_local_user_id", localId);
-      }
-      
-      // 2. Check for access token
-      const token = await SecureStore.getItemAsync("access_token");
-      
-      set({ 
-        localUserId: localId, 
-        accessToken: token, 
-        isLoggedIn: !!token,
-        isLoading: false 
-      });
-    } catch (e) {
-      set({ isLoading: false });
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      userId: uuidv4(),
+      name: "",
+      email: null,
+      isAnonymous: true,
+      setProfile: (name, email = null) => set({ name, email }),
+      login: (email, name) => set({ email, name, isAnonymous: false }),
+      logout: () => set({ email: null, isAnonymous: true }),
+    }),
+    {
+      name: "auth-storage",
+      storage: createJSONStorage(() => AsyncStorage),
     }
-  },
-  login: async (token) => {
-    await SecureStore.setItemAsync("access_token", token);
-    set({ accessToken: token, isLoggedIn: true });
-  },
-  logout: async () => {
-    await SecureStore.deleteItemAsync("access_token");
-    set({ accessToken: null, isLoggedIn: false });
-  }
-}));
-
+  )
+);
