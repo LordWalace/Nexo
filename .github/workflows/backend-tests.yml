@@ -90,6 +90,9 @@ jobs:
       - name: Run MyPy
         run: backend/.venv/bin/python -m mypy backend/app
 
+      - name: Run Alembic migrations
+        run: cd backend && .venv/bin/python -m alembic upgrade head
+
       - name: Run Pytest
         run: >-
           backend/.venv/bin/python -m pytest tests
