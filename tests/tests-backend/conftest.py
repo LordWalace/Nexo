@@ -24,10 +24,9 @@ backend_dir = str(Path(__file__).resolve().parent.parent.parent / "backend")
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-from httpx import ASGITransport, AsyncClient
-
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.main import app
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest.fixture(autouse=True)
