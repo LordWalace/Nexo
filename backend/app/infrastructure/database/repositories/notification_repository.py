@@ -15,18 +15,21 @@ class NotificationRepository(INotificationRepository):
         self.session.add(notification)
         return notification
 
-    async def get_by_id(self, notification_id: UUID, user_id: UUID) -> Notification | None:
+    async def get_by_id(
+        self, notification_id: UUID, user_id: UUID
+    ) -> Notification | None:
         stmt = select(Notification).where(
-            Notification.id == notification_id,
-            Notification.user_id == user_id
+            Notification.id == notification_id, Notification.user_id == user_id
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
     async def get_all_by_user(self, user_id: UUID) -> list[Notification]:
-        stmt = select(Notification).where(
-            Notification.user_id == user_id
-        ).order_by(Notification.created_at.desc())
+        stmt = (
+            select(Notification)
+            .where(Notification.user_id == user_id)
+            .order_by(Notification.created_at.desc())
+        )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

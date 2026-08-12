@@ -11,17 +11,16 @@ from app.schemas.user import UserCreate, UserResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
-    user_in: UserCreate,
-    session: AsyncSession = Depends(get_db)
+    user_in: UserCreate, session: AsyncSession = Depends(get_db)
 ) -> "Any":
     repository = UserRepository(session)
     use_cases = UserUseCases(repository, session)
     return await use_cases.create_user(user_in)
 
+
 @router.get("/me", response_model=UserResponse)
-async def read_users_me(
-    current_user: User = Depends(get_current_user)
-) -> "Any":
+async def read_users_me(current_user: User = Depends(get_current_user)) -> "Any":
     return current_user

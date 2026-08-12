@@ -10,7 +10,9 @@ class INotificationRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, notification_id: UUID, user_id: UUID) -> Notification | None:
+    async def get_by_id(
+        self, notification_id: UUID, user_id: UUID
+    ) -> Notification | None:
         pass
 
     @abstractmethod

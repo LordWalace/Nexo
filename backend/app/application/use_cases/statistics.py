@@ -9,10 +9,10 @@ from app.schemas.statistics import StatisticsResponse
 
 class StatisticsUseCases:
     def __init__(
-        self, 
+        self,
         activity_repo: IActivityRepository,
         history_repo: IHistoryRepository,
-        session: AsyncSession
+        session: AsyncSession,
     ):
         self.activity_repo = activity_repo
         self.history_repo = history_repo
@@ -27,5 +27,5 @@ class StatisticsUseCases:
 
         return StatisticsResponse(
             total_activities=total_activities,
-            total_execution_periods=total_execution_periods
+            total_execution_periods=total_execution_periods,
         )

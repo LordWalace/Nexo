@@ -16,6 +16,7 @@ from app.core.redis import close_redis, get_redis_client
 
 setup_logging()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> "Any":
     # Startup
@@ -24,11 +25,12 @@ async def lifespan(app: FastAPI) -> "Any":
     # Shutdown
     await close_redis()
 
+
 app = FastAPI(
-    title=settings.APP_NAME, 
-    description="Backend API for Nexo", 
+    title=settings.APP_NAME,
+    description="Backend API for Nexo",
     version="0.1.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 if settings.BACKEND_CORS_ORIGINS:
@@ -42,9 +44,11 @@ if settings.BACKEND_CORS_ORIGINS:
 
 app.include_router(api_router)
 
+
 @app.get("/")
 async def root() -> dict[str, str]:
     return {"message": "Welcome to Nexo API", "docs": "/docs"}
+
 
 app.add_exception_handler(AppException, app_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)

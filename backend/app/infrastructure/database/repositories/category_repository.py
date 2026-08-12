@@ -20,16 +20,17 @@ class CategoryRepository(ICategoryRepository):
         stmt = select(Category).where(
             Category.id == category_id,
             Category.user_id == user_id,
-            Category.deleted_at.is_(None)
+            Category.deleted_at.is_(None),
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
     async def get_all_by_user(self, user_id: UUID) -> list[Category]:
-        stmt = select(Category).where(
-            Category.user_id == user_id,
-            Category.deleted_at.is_(None)
-        ).order_by(Category.created_at.desc())
+        stmt = (
+            select(Category)
+            .where(Category.user_id == user_id, Category.deleted_at.is_(None))
+            .order_by(Category.created_at.desc())
+        )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

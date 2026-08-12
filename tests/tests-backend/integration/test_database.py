@@ -1,19 +1,23 @@
 import uuid
-import pytest
-from sqlalchemy import text
 
+import pytest
 from app.core.security import get_password_hash
 from app.infrastructure.database.models.user import User
+from sqlalchemy import text
 
 pytestmark = pytest.mark.integration
+
 
 @pytest.mark.asyncio
 async def test_database_connection(db_session):
     try:
         result = await db_session.execute(text("SELECT 1"))
         assert result.scalar() == 1
-    except Exception as e:
-        pytest.fail(f"Dependência ausente: O serviço do banco de dados (PostgreSQL) não está disponível. Detalhes: {e}")
+    except Exception as e:  # noqa: BLE001
+        pytest.fail(
+            f"Dependência ausente: O serviço do banco de dados (PostgreSQL) não está disponível. Detalhes: {e}"
+        )
+
 
 @pytest.mark.asyncio
 async def test_create_user(db_session):
@@ -27,5 +31,7 @@ async def test_create_user(db_session):
     try:
         await db_session.commit()
         assert new_user.id is not None
-    except Exception as e:
-        pytest.fail(f"Dependência ausente: O serviço do banco de dados (PostgreSQL) não está disponível. Detalhes: {e}")
+    except Exception as e:  # noqa: BLE001
+        pytest.fail(
+            f"Dependência ausente: O serviço do banco de dados (PostgreSQL) não está disponível. Detalhes: {e}"
+        )
