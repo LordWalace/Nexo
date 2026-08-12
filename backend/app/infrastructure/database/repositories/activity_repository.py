@@ -20,16 +20,17 @@ class ActivityRepository(IActivityRepository):
         stmt = select(Activity).where(
             Activity.id == activity_id,
             Activity.user_id == user_id,
-            Activity.deleted_at.is_(None)
+            Activity.deleted_at.is_(None),
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
     async def get_all_by_user(self, user_id: UUID) -> list[Activity]:
-        stmt = select(Activity).where(
-            Activity.user_id == user_id,
-            Activity.deleted_at.is_(None)
-        ).order_by(Activity.created_at.desc())
+        stmt = (
+            select(Activity)
+            .where(Activity.user_id == user_id, Activity.deleted_at.is_(None))
+            .order_by(Activity.created_at.desc())
+        )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

@@ -15,18 +15,22 @@ class HistoryRepository(IHistoryRepository):
         self.session.add(period)
         return period
 
-    async def get_by_id(self, period_id: UUID, user_id: UUID) -> ActivityExecutionPeriod | None:
+    async def get_by_id(
+        self, period_id: UUID, user_id: UUID
+    ) -> ActivityExecutionPeriod | None:
         stmt = select(ActivityExecutionPeriod).where(
             ActivityExecutionPeriod.id == period_id,
-            ActivityExecutionPeriod.user_id == user_id
+            ActivityExecutionPeriod.user_id == user_id,
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
     async def get_all_by_user(self, user_id: UUID) -> list[ActivityExecutionPeriod]:
-        stmt = select(ActivityExecutionPeriod).where(
-            ActivityExecutionPeriod.user_id == user_id
-        ).order_by(ActivityExecutionPeriod.start_time.desc())
+        stmt = (
+            select(ActivityExecutionPeriod)
+            .where(ActivityExecutionPeriod.user_id == user_id)
+            .order_by(ActivityExecutionPeriod.start_time.desc())
+        )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

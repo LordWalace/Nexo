@@ -1,25 +1,32 @@
+import asyncio
 import os
 import sys
-import asyncio
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-os.environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/nexo_db"
-os.environ["REDIS_URL"] = "redis://localhost:6379/0"
-os.environ["JWT_SECRET_KEY"] = "testsecret_must_be_32_bytes_long_for_security_algorithms"
-os.environ["STORAGE_ENDPOINT"] = "http://localhost:9000"
-os.environ["STORAGE_ACCESS_KEY"] = "test"
-os.environ["STORAGE_SECRET_KEY"] = "test"
-os.environ["STORAGE_BUCKET"] = "test"
-os.environ["APP_SLUG"] = "nexo"
+os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/nexo_db")
+os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
+os.environ.setdefault("JWT_SECRET_KEY", "testsecret_must_be_32_bytes_long_for_security_algorithms")
+os.environ.setdefault("STORAGE_ENDPOINT", "http://localhost:9000")
+os.environ.setdefault("STORAGE_ACCESS_KEY", "test")
+os.environ.setdefault("STORAGE_SECRET_KEY", "test")
+os.environ.setdefault("STORAGE_BUCKET", "test")
+os.environ.setdefault("APP_SLUG", "nexo")
+
+from collections.abc import AsyncGenerator
+from pathlib import Path
 
 import pytest
-from collections.abc import AsyncGenerator
-from httpx import ASGITransport, AsyncClient
+
+# Add the 'backend' directory to sys.path to allow importing 'app'
+backend_dir = str(Path(__file__).resolve().parent.parent.parent / "backend")
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.main import app
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest.fixture(autouse=True)
