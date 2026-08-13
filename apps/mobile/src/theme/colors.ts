@@ -1,20 +1,21 @@
 export const lightColors = {
-  background: "#f3f4f6", // gray-100
-  surface: "#e5e7eb", // gray-200
-  text: "#111827", // gray-900
-  textSecondary: "#4b5563", // gray-600
-  border: "#d1d5db", // gray-300
-  primary: "#3b82f6", // blue-500
+  background: "#F5F5F7",
+  surface: "#FFFFFF",
+  text: "#1C1C1E",
+  textSecondary: "#8E8E93",
+  border: "#E5E5EA",
+  accent: "#6B8A9A",
+  danger: "#FF3B30",
+  success: "#34C759",
 };
 
 export const darkColors = {
-  background: "#1f2937", // gray-800
-  surface: "#374151", // gray-700
-  text: "#f9fafb", // gray-50
-  textSecondary: "#9ca3af", // gray-400
-  border: "#4b5563", // gray-600
-  primary: "#60a5fa", // blue-400
+  background: "#121212",
+  surface: "#1C1C1E",
+  text: "#F5F5F7",
+  textSecondary: "#8E8E93",
+  border: "#2C2C2E",
+  accent: "#6B8A9A",
+  danger: "#FF453A",
+  success: "#32D74B",
 };
-
-export type Colors = typeof lightColors;
-
