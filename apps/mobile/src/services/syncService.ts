@@ -2,8 +2,8 @@ import { useAuthStore } from "../stores/authStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const performInitialSync = async () => {
-  const { accessToken } = useAuthStore.getState();
-  if (!accessToken) return;
+  const { userId } = useAuthStore.getState();
+  if (!userId) return;
 
   try {
     // 1. Fetch local data from AsyncStorage or SQLite
