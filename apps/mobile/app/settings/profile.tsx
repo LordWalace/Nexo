@@ -1,73 +1,69 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
-import { useThemeStore } from "../../src/stores/themeStore";
-import { useAuthStore } from "../../src/stores/authStore";
-import { lightColors, darkColors } from "../../src/theme/colors";
-import { Header } from "../../src/components/Header";
-import { Button } from "../../src/components/Button";
+import React, { useState } from "react";
+import { View, StyleSheet, TextInput, ScrollView, Alert } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useAuthStore } from "../../src/stores/useAuthStore";
+import { useThemeStore } from "../../src/stores/themeStore";
+import { lightColors, darkColors } from "../../src/theme/colors";
+import { Text } from "../../src/components/Text";
+import { Button } from "../../src/components/Button";
 
 export default function Profile() {
+  const { userName, setUserName } = useAuthStore();
   const { theme } = useThemeStore();
-  const { name, email, setProfile } = useAuthStore();
-  const colors = theme === "light" ? lightColors : darkColors;
+  const colors = theme === "dark" ? darkColors : lightColors;
   const router = useRouter();
 
-  const [inputName, setInputName] = useState(name);
+  const [name, setName] = useState(userName || "");
 
   const handleSave = () => {
-    setProfile(inputName, email);
+    if (!name.trim()) {
+      Alert.alert("Erro", "O nome não pode estar vazio.");
+      return;
+    }
+    setUserName(name.trim());
     router.back();
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Header title="Editar Perfil" />
-      
-      <View style={styles.content}>
-        <Text style={[styles.label, { color: colors.text }]}>Nome</Text>
-        <TextInput
-          style={[styles.input, { color: colors.text, borderColor: colors.border, backgroundColor: colors.surface }]}
-          value={inputName}
-          onChangeText={setInputName}
-          placeholder="Seu nome"
-          placeholderTextColor={colors.textSecondary}
-        />
-
-        <Text style={[styles.label, { color: colors.text, marginTop: 16 }]}>Email</Text>
-        <TextInput
-          style={[styles.input, { color: colors.textSecondary, borderColor: colors.border, backgroundColor: colors.surface, opacity: 0.7 }]}
-          value={email || "Não vinculado"}
-          editable={false}
-        />
-
-        <View style={styles.actions}>
-          <Button title="Salvar" onPress={handleSave} />
-        </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
+      <Text variant="body" style={styles.label}>Como prefere ser chamado?</Text>
+      <TextInput
+        style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
+        value={name}
+        onChangeText={setName}
+        placeholder="Seu nome"
+        placeholderTextColor={colors.textSecondary}
+      />
+      <View style={styles.actions}>
+        <Button title="Cancelar" color={colors.surface} textColor={colors.text} onPress={() => router.back()} style={{ flex: 1, marginRight: 8 }} />
+        <Button title="Salvar" color={colors.accent} onPress={handleSave} style={{ flex: 1, marginLeft: 8 }} />
       </View>
-    </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  content: {
+    flexGrow: 1,
     padding: 16,
   },
   label: {
-    fontSize: 16,
-    fontWeight: "500",
     marginBottom: 8,
+    marginTop: 24,
   },
   input: {
-    borderWidth: 1,
-    borderRadius: 8,
     padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
     fontSize: 16,
+    minHeight: 48,
   },
   actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 32,
-  }
+  },
 });

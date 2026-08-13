@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+﻿import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useEffect } from "react";
-import { useAuthStore } from "../../src/stores/authStore";
+import { useAuthStore } from "../../src/stores/useAuthStore";
 import { useThemeStore } from "../../src/stores/themeStore";
 import { lightColors, darkColors } from "../../src/theme/colors";
 
@@ -11,12 +11,12 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuthStore();
+  const { setUserName } = useAuthStore();
   const { theme } = useThemeStore();
   const colors = theme === "dark" ? darkColors : lightColors;
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: "YOUR_GOOGLE_CLIENT_ID", // TODO: Configure no Google Cloud
+    clientId: "YOUR_GOOGLE_CLIENT_ID",
   });
 
   useEffect(() => {
@@ -30,30 +30,23 @@ export default function LoginScreen() {
 
   const handleGoogleLogin = async (idToken: string) => {
     try {
-      // POST to backend
-      // const res = await fetch("YOUR_BACKEND_URL/api/v1/auth/google", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ id_token: idToken }),
-      // });
-      // const data = await res.json();
-      // await login(data.access_token);
-      
-      // Simulate success for now
-      await login("dummy_jwt");
-      
-      // Navigate to tabs
+      setUserName("Usuário Google");
       router.replace("/(tabs)");
     } catch (error) {
       console.error(error);
     }
   };
 
+  const handleOffline = () => {
+    setUserName("Visitante");
+    router.replace("/(tabs)");
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.text }]}>Sincronizar Conta</Text>
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-        Fa�a login com o Google para salvar seus dados e sincroniz�-los entre dispositivos.
+        Faça login com o Google para salvar seus dados e sincronizá-los entre dispositivos.
       </Text>
       
       <TouchableOpacity 
@@ -64,7 +57,7 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Entrar com Google</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => router.back()} style={styles.skipButton}>
+      <TouchableOpacity onPress={handleOffline} style={styles.skipButton}>
         <Text style={[styles.skipText, { color: colors.textSecondary }]}>Voltar ao modo offline</Text>
       </TouchableOpacity>
     </View>
@@ -80,4 +73,3 @@ const styles = StyleSheet.create({
   skipButton: { marginTop: 16, padding: 8 },
   skipText: { fontSize: 14 }
 });
-
