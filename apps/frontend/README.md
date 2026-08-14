@@ -1,47 +1,32 @@
-# Nexo - Web Frontend
+# React + TypeScript + Vite
 
-Bem-vindo ao Frontend Web do Nexo! Esta aplicação é responsável pela interface principal acessada via navegador. Foi construída com um framework moderno em JavaScript/TypeScript.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Pré-requisitos
+Currently, two official plugins are available:
 
-Para rodar o frontend localmente você precisará ter instalado:
-- **Node.js** (versão 18+ recomendada)
-- **NPM**, **Yarn** ou **PNPM**
-- O [Backend Nexo](../../backend/README.md) rodando localmente (caso necessite de dados reais).
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Como Baixar e Configurar
+## React Compiler
 
-1. **Acesse a pasta do frontend a partir da raiz do monorepo:**
-   ```bash
-   cd apps/frontend
-   ```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-2. **Instale as dependências:**
-   ```bash
-   npm install
-   # ou
-   yarn install
-   ```
+## Expanding the Oxlint configuration
 
-3. **Configuração de Variáveis de Ambiente:**
-   - Crie um arquivo `.env.local` ou `.env` dentro da pasta `apps/frontend`.
-   - Configure a URL base da API (ex: `NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1`). 
-   *(Verifique o arquivo `.env.example` caso exista na pasta para as chaves exatas)*
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
 
-## Como Rodar
-
-Para iniciar o servidor de desenvolvimento:
-
-```bash
-npm run dev
-# ou
-yarn dev
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
 ```
 
-Acesse a aplicação no seu navegador: [http://localhost:3000](http://localhost:3000) (ou a porta que for informada no terminal).
-
-## Testes e Qualidade de Código
-
-- Para checar e corrigir o Lint: `npm run lint` ou `npm run lint --fix`
-- Para rodar os testes unitários (ex: Jest/Vitest): `npm test`
-- Certifique-se que todo código submetido em PRs não introduza novos _warnings_ de Lint.
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
