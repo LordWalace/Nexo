@@ -54,7 +54,7 @@ export default function ActivityDetail() {
   const activity = activities.find(a => a.id === id);
 
   if (!activity || activity.deleted) {
-    return <View style={[styles.container, { backgroundColor: colors.background }]}><Text>Atividade não encontrada.</Text></View>;
+    return <View style={[styles.container, { backgroundColor: 'transparent' }]}><Text>Atividade não encontrada.</Text></View>;
   }
 
   const handleDelete = () => {
@@ -79,7 +79,7 @@ export default function ActivityDetail() {
   const durationMins = activity.durationMs ? Math.round(activity.durationMs / 60000) : 0;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
       <Text variant="h1" style={styles.title}>{activity.title}</Text>
       
       {activity.description && (

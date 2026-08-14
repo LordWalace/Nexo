@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataStore } from '../../src/stores/useDataStore';
@@ -15,7 +15,7 @@ export default function HistoryList() {
   const deletedActivities = activities.filter(a => a.deleted).reverse();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
       <Text variant="body" style={{ marginBottom: 16, color: colors.textSecondary }}>
         Aqui estão as atividades excluídas. Você pode selecioná-las para visualizar detalhes ou recuperar.
       </Text>
@@ -39,7 +39,7 @@ export default function HistoryList() {
                 </Text>
               )}
               <Text variant="caption" style={{ color: colors.textSecondary }}>
-                Duração: {durationMins} min
+                Dura��o: {durationMins} min
               </Text>
             </TouchableOpacity>
           );

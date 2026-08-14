@@ -26,7 +26,7 @@ export default function HistoryDetail() {
   const activity = activities.find(a => a.id === id);
 
   if (!activity || !activity.deleted) {
-    return <View style={[styles.container, { backgroundColor: colors.background }]}><Text>Atividade excluída não encontrada.</Text></View>;
+    return <View style={[styles.container, { backgroundColor: 'transparent' }]}><Text>Atividade excluída não encontrada.</Text></View>;
   }
 
   const handleRecover = () => {
@@ -67,7 +67,7 @@ export default function HistoryDetail() {
   const durationMins = activity.durationMs ? Math.round(activity.durationMs / 60000) : 0;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
       <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <Text variant="h1" style={styles.row}>{activity.title}</Text>
         {activity.description && <Text variant="body" style={styles.row}>{activity.description}</Text>}

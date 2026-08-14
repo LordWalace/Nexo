@@ -14,7 +14,7 @@ export default function CategoriesList() {
   const colors = theme === 'dark' ? darkColors : lightColors;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}

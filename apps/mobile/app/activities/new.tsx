@@ -90,8 +90,8 @@ export default function NewActivityWizard() {
   const inputStyle = [styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: 'transparent' }]}>
       <Text variant="h2" style={styles.stepTitle}>Passo {step} de 6</Text>
 
       {step === 1 && (
@@ -176,6 +176,7 @@ export default function NewActivityWizard() {
               value={date}
               mode="date"
               display="default"
+              themeVariant={theme === 'dark' ? 'dark' : 'light'}
               onChange={(event, selectedDate) => {
                 setShowDatePicker(false);
                 if (selectedDate) setDate(selectedDate);

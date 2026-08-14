@@ -6,6 +6,9 @@ import { useThemeStore } from "../src/stores/themeStore";
 import { useDataStore } from "../src/stores/useDataStore";
 import { lightColors, darkColors } from "../src/theme/colors";
 import { Text } from "../src/components/Text";
+import LoadingScreen from './_loading';
+import { ThemeProvider, DefaultTheme, DarkTheme } from "@react-navigation/native";
+import { AnimatedBackground } from "../src/components/AnimatedBackground";
 
 export default function RootLayout() {
   const { loadTheme, theme } = useThemeStore();
@@ -41,28 +44,37 @@ export default function RootLayout() {
   }, [isReady, segments, userName]);
 
   if (!isReady) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color={colors.accent} />
-        <Text variant="h1" style={{ marginTop: 16, color: colors.text }}>Nexo</Text>
-      </View>
-    );
+    return <LoadingScreen />;
   }
 
+  const customTheme = theme === "dark" ? DarkTheme : DefaultTheme;
+  const navigationTheme = {
+    ...customTheme,
+    colors: {
+      ...customTheme.colors,
+      background: "transparent",
+    },
+  };
+
   return (
-    <Stack 
-      screenOptions={{ 
-        headerShown: false,
-        animation: 'slide_from_right', 
-        contentStyle: { backgroundColor: colors.background }
-      }}
-    >
-      <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-      <Stack.Screen name="(auth)/login" options={{ animation: 'fade' }} />
-      <Stack.Screen name="activities/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-      <Stack.Screen name="activities/[id]/edit" options={{ animation: 'slide_from_right' }} />
-      <Stack.Screen name="history/[id]" options={{ animation: 'slide_from_right' }} />
-    </Stack>
+    <ThemeProvider value={navigationTheme}>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <AnimatedBackground />
+        <Stack 
+          screenOptions={{ 
+            headerShown: false,
+            animation: 'slide_from_right', 
+            contentStyle: { backgroundColor: 'transparent' }
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+          <Stack.Screen name="(auth)/login" options={{ animation: 'fade' }} />
+          <Stack.Screen name="activities/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="activities/[id]/edit" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="history/[id]" options={{ animation: 'slide_from_right' }} />
+        </Stack>
+      </View>
+    </ThemeProvider>
   );
 }
 
