@@ -9,6 +9,7 @@ import { Text } from "../src/components/Text";
 import LoadingScreen from './_loading';
 import { ThemeProvider, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { AnimatedBackground } from "../src/components/AnimatedBackground";
+import { SmartBanner } from "../src/components/SmartBanner";
 
 export default function RootLayout() {
   const { loadTheme, theme } = useThemeStore();
@@ -60,6 +61,7 @@ export default function RootLayout() {
     <ThemeProvider value={navigationTheme}>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <AnimatedBackground />
+        <SmartBanner />
         <Stack 
           screenOptions={{ 
             headerShown: false,
