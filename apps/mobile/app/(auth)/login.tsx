@@ -1,4 +1,4 @@
-﻿import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
@@ -31,7 +31,6 @@ export default function LoginScreen() {
   const handleGoogleLogin = async (idToken: string) => {
     try {
       setUserName("Usuário Google");
-      router.replace("/(tabs)");
     } catch (error) {
       console.error(error);
     }
@@ -39,11 +38,10 @@ export default function LoginScreen() {
 
   const handleOffline = () => {
     setUserName("Visitante");
-    router.replace("/(tabs)");
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
       <Text style={[styles.title, { color: colors.text }]}>Sincronizar Conta</Text>
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
         Faça login com o Google para salvar seus dados e sincronizá-los entre dispositivos.

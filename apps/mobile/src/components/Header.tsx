@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export function Header({ title }: HeaderProps) {
   const { theme } = useThemeStore();
-  const colors = theme === "light" ? lightColors : darkColors;
+  const colors = theme === 'dark' ? darkColors : lightColors;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>

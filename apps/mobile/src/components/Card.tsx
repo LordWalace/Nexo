@@ -1,4 +1,4 @@
-﻿import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useThemeStore } from "../stores/themeStore";
 import { lightColors, darkColors } from "../theme/colors";
 
@@ -9,7 +9,7 @@ interface CardProps {
 
 export function Card({ children, onPress }: CardProps) {
   const { theme } = useThemeStore();
-  const colors = theme === "light" ? lightColors : darkColors;
+  const colors = theme === 'dark' ? darkColors : lightColors;
 
   const cardStyle = [styles.card, { backgroundColor: colors.surface, borderColor: colors.border }];
 

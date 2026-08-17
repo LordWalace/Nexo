@@ -26,6 +26,7 @@ export default function TabLayout() {
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.textSecondary,
         }}
+        sceneContainerStyle={{ backgroundColor: 'transparent' }}
       >
         <Tabs.Screen
           name="index"

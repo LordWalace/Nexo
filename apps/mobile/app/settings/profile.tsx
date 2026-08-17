@@ -26,8 +26,8 @@ export default function Profile() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: 'transparent' }]}>
       <Text variant="body" style={styles.label}>Como prefere ser chamado?</Text>
       <TextInput
         style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}

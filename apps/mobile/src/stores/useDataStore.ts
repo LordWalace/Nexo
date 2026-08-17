@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { saveData, loadData } from '../services/storage';
+import { saveEncryptedData, loadEncryptedData } from '../services/encryptedStorage';
 import * as Crypto from 'expo-crypto';
 import { scheduleActivityNotifications, cancelActivityNotifications, cancelRecurringGroupNotifications } from '../services/notifications';
 
@@ -73,10 +73,10 @@ export const useDataStore = create<DataState>((set, get) => ({
   history: [],
 
   loadAllData: async () => {
-    const activities = (await loadData('@nexo:activities')) || [];
-    const categories = (await loadData('@nexo:categories')) || [];
-    const materials = (await loadData('@nexo:materials')) || [];
-    const history = (await loadData('@nexo:history')) || [];
+    const activities = (await loadEncryptedData<Activity[]>('@nexo:activities')) || [];
+    const categories = (await loadEncryptedData<Category[]>('@nexo:categories')) || [];
+    const materials = (await loadEncryptedData<Material[]>('@nexo:materials')) || [];
+    const history = (await loadEncryptedData<HistorySession[]>('@nexo:history')) || [];
     set({ activities, categories, materials, history });
   },
 
@@ -89,7 +89,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     const newActivity = { ...activity, durationMs, id: Crypto.randomUUID(), deleted: false };
     const activities = [...get().activities, newActivity];
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     scheduleActivityNotifications(newActivity);
   },
   addActivities: (newActivities) => {
@@ -102,7 +102,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     });
     const activities = [...get().activities, ...prepared];
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     prepared.forEach(act => scheduleActivityNotifications(act));
   },
   updateActivity: (id, data) => {
@@ -115,7 +115,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     }
     const activities = get().activities.map(a => a.id === id ? { ...a, ...data, durationMs } : a);
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     
     // Reschedule if times changed
     if (data.startTime || data.endTime || data.deleted === true) {
@@ -130,19 +130,19 @@ export const useDataStore = create<DataState>((set, get) => ({
   deleteActivity: (id) => {
     const activities = get().activities.map(a => a.id === id ? { ...a, deleted: true } : a);
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     cancelActivityNotifications(id);
   },
   deleteRecurringGroup: (groupId) => {
     const activities = get().activities.map(a => a.recurringGroupId === groupId ? { ...a, deleted: true } : a);
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     cancelRecurringGroupNotifications(groupId);
   },
   recoverActivity: (id) => {
     const activities = get().activities.map(a => a.id === id ? { ...a, deleted: false } : a);
     set({ activities });
-    saveData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:activities', activities);
     const recovered = get().activities.find(a => a.id === id);
     if (recovered) scheduleActivityNotifications(recovered);
   },
@@ -151,34 +151,34 @@ export const useDataStore = create<DataState>((set, get) => ({
     const newCategory = { ...category, id: Crypto.randomUUID() };
     const categories = [...get().categories, newCategory];
     set({ categories });
-    saveData('@nexo:categories', categories);
+    saveEncryptedData('@nexo:categories', categories);
   },
   updateCategory: (id, data) => {
     const categories = get().categories.map(c => c.id === id ? { ...c, ...data } : c);
     set({ categories });
-    saveData('@nexo:categories', categories);
+    saveEncryptedData('@nexo:categories', categories);
   },
   deleteCategory: (id) => {
     const categories = get().categories.filter(c => c.id !== id);
     set({ categories });
-    saveData('@nexo:categories', categories);
+    saveEncryptedData('@nexo:categories', categories);
   },
 
   addMaterial: (material) => {
     const newMaterial = { ...material, id: Crypto.randomUUID() };
     const materials = [...get().materials, newMaterial];
     set({ materials });
-    saveData('@nexo:materials', materials);
+    saveEncryptedData('@nexo:materials', materials);
   },
   updateMaterial: (id, data) => {
     const materials = get().materials.map(m => m.id === id ? { ...m, ...data } : m);
     set({ materials });
-    saveData('@nexo:materials', materials);
+    saveEncryptedData('@nexo:materials', materials);
   },
   deleteMaterial: (id) => {
     const materials = get().materials.filter(m => m.id !== id);
     set({ materials });
-    saveData('@nexo:materials', materials);
+    saveEncryptedData('@nexo:materials', materials);
   },
 
   startSession: (activityId) => {
@@ -189,7 +189,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     };
     const history = [...get().history, newSession];
     set({ history });
-    saveData('@nexo:history', history);
+    saveEncryptedData('@nexo:history', history);
   },
   finishSession: (sessionId) => {
     const history = get().history.map(h => {
@@ -202,11 +202,11 @@ export const useDataStore = create<DataState>((set, get) => ({
       return h;
     });
     set({ history });
-    saveData('@nexo:history', history);
+    saveEncryptedData('@nexo:history', history);
   },
   deleteHistorySession: (id) => {
     const history = get().history.filter(h => h.id !== id);
     set({ history });
-    saveData('@nexo:history', history);
+    saveEncryptedData('@nexo:history', history);
   }
 }));

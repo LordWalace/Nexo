@@ -129,7 +129,7 @@ export default function ActivitiesTab() {
   const days = getWeekDays();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
       <View style={styles.calendarContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.calendarScroll}>
           {days.map((day, index) => {

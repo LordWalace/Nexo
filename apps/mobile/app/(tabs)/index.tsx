@@ -104,8 +104,8 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <ScrollView style={[styles.container, { backgroundColor: 'transparent' }]}>
       <View style={styles.header}>
         <Text variant="caption" style={{ color: colors.textSecondary, textTransform: 'capitalize' }}>{dateStr}</Text>
         <Text variant="body" style={{ color: colors.textSecondary, marginTop: 4 }}>{timeStr}</Text>

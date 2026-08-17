@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Settings() {
   const { theme, toggleTheme } = useThemeStore();
   const { userName, setUserName } = useAuthStore();
-  const colors = theme === "light" ? lightColors : darkColors;
+  const colors = theme === 'dark' ? darkColors : lightColors;
   const router = useRouter();
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -47,7 +47,7 @@ export default function Settings() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: 'transparent' }]}>
       
       <ScrollView contentContainerStyle={styles.content}>
         
