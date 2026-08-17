@@ -30,6 +30,12 @@
       "expo-secure-store",
       "@react-native-community/datetimepicker"
     ],
-    "scheme": "nexo"
+    "scheme": "nexo",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b0db35c9-4d49-4984-bf89-fec394a9c776"
+      }
+    }
   }
 }
