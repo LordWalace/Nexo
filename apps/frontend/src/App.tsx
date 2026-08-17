@@ -28,10 +28,14 @@ function App() {
 
       <main className="hero-section">
         <div className="hero-content">
+          <div className="beta-badge">🚀 Versão Beta</div>
           <h1 className="hero-title">O seu diário de estudos <span>definitivo</span>.</h1>
           <p className="hero-subtitle">
             Organize suas matérias, acompanhe seu progresso e alcance suas metas com o Nexo.
             Disponível para Android e Web.
+          </p>
+          <p className="beta-disclaimer">
+            *O Nexo está em fase Beta. Recursos como Login Social e Backup em Nuvem estão sendo implementados.
           </p>
           <div className="hero-actions">
             <a href={downloadLink} className="btn-primary">
