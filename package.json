@@ -1,0 +1,8 @@
+{
+  "name": "nexo-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
