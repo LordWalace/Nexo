@@ -9,6 +9,10 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EAS_PACKAGE_MANAGER": "npm",
+        "EXPO_USE_METRO_WORKSPACE_ROOT": "1"
+      },
       "android": {
         "buildType": "apk"
       }
