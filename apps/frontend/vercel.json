@@ -1,3 +1,4 @@
 {
+  "name": "nexo-down",
   "installCommand": "rm -rf ../../package-lock.json node_modules ../../node_modules && npm cache clean --force && npm install"
 }
