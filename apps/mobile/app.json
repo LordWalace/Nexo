@@ -3,6 +3,8 @@
     "name": "Nexo",
     "slug": "nexo",
     "version": "1.0.0",
+    "newArchEnabled": false,
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
