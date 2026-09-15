@@ -36,7 +36,7 @@ const LinkedText = ({ text, style }: { text: string, style?: any }) => {
 
 export default function Home() {
   const { activities, loadAllData, updateActivity } = useDataStore();
-  const { userName, loadUserName } = useAuthStore();
+  const { userName } = useAuthStore();
   const { theme } = useThemeStore();
   const colors = theme === 'dark' ? darkColors : lightColors;
 
@@ -44,7 +44,6 @@ export default function Home() {
 
   useEffect(() => {
     loadAllData();
-    loadUserName();
     const interval = setInterval(() => {
       const nowTime = new Date();
       setCurrentTime(nowTime);

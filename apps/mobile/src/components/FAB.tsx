@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useThemeStore } from '../stores/themeStore';
 import { lightColors, darkColors } from '../theme/colors';
 import { Text } from './Text';
+import { Plus, Square } from 'lucide-react-native';
 
 interface FABProps {
   onActionPress: () => void;
@@ -31,7 +32,7 @@ export const FAB: React.FC<FABProps> = ({ onActionPress, actionText = 'Criar nov
         style={[styles.fab, { backgroundColor: colors.accent }]} 
         onPress={() => setIsOpen(!isOpen)}
       >
-        <Text variant="h1" style={{ color: '#FFF' }}>{isOpen ? 'X' : '+'}</Text>
+        {isOpen ? <Square color="#FFF" size={24} /> : <Plus color="#FFF" size={28} />}
       </TouchableOpacity>
     </View>
   );

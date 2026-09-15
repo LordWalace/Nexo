@@ -10,14 +10,15 @@ import LoadingScreen from './_loading';
 import { ThemeProvider, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { AnimatedBackground } from "../src/components/AnimatedBackground";
 import { SmartBanner } from "../src/components/SmartBanner";
+import { requestNotificationPermissions } from "../src/services/notifications";
 
 export default function RootLayout() {
   const { loadTheme, theme } = useThemeStore();
-  const { loadUserName, userName } = useAuthStore();
+  const { initializeAuth, isInitialized, userName } = useAuthStore();
   const { loadAllData } = useDataStore();
   const colors = theme === "dark" ? darkColors : lightColors;
 
-  const [isReady, setIsReady] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const segments = useSegments();
   const router = useRouter();
 
@@ -25,11 +26,14 @@ export default function RootLayout() {
     async function initApp() {
       await loadTheme();
       await loadAllData();
-      await loadUserName();
-      setIsReady(true);
+      await requestNotificationPermissions();
+      initializeAuth();
+      setDataLoaded(true);
     }
     initApp();
   }, []);
+
+  const isReady = dataLoaded && isInitialized;
 
   useEffect(() => {
     if (!isReady) return;

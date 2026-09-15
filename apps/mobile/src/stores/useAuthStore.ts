@@ -1,26 +1,56 @@
 import { create } from 'zustand';
-import { saveUserProfile, getUserProfile, clearUserProfile } from '../services/secureStorage';
+import { onAuthStateChanged, User, signOut, updateProfile } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 interface AuthState {
-  userName: string | null;
-  loadUserName: () => Promise<void>;
-  setUserName: (name: string) => void;
+  user: User | null;
+  userName: string | null; // For fallback/offline mode
+  isInitialized: boolean;
+  initializeAuth: () => void;
+  setOfflineUser: (name: string) => void;
+  setUserName: (name: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
   userName: null,
-  loadUserName: async () => {
-    const profile = await getUserProfile();
-    if (profile?.name) set({ userName: profile.name });
+  isInitialized: false,
+  
+  initializeAuth: () => {
+    onAuthStateChanged(auth, (firebaseUser) => {
+      set({ 
+        user: firebaseUser, 
+        userName: firebaseUser?.displayName || null,
+        isInitialized: true 
+      });
+    });
   },
+
+  setOfflineUser: (name) => {
+    set({ userName: name, user: null, isInitialized: true });
+  },
+
   setUserName: async (name) => {
-    set({ userName: name });
-    // Generating dummy ID and email for demonstration, as we only had userName before
-    await saveUserProfile({ id: 'local-user', name, email: '' });
+    const { user } = get();
+    if (user) {
+      try {
+        await updateProfile(user, { displayName: name });
+        set({ userName: name });
+      } catch (error) {
+        console.error("Erro ao atualizar nome no Firebase:", error);
+      }
+    } else {
+      set({ userName: name });
+    }
   },
+
   logout: async () => {
-    set({ userName: null });
-    await clearUserProfile();
+    try {
+      await signOut(auth);
+      set({ user: null, userName: null });
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   }
 }));

@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Settings() {
   const { theme, toggleTheme } = useThemeStore();
-  const { userName, setUserName } = useAuthStore();
+  const { userName, user, logout } = useAuthStore();
   const colors = theme === 'dark' ? darkColors : lightColors;
   const router = useRouter();
 
@@ -60,7 +60,11 @@ export default function Settings() {
           </View>
           
           <View style={styles.buttonSpacing}>
-            <Button title="Entrar com Google" color="#4A6B69" onPress={() => {}} />
+            {user ? (
+              <Button title="Sair da Conta" color="#e74c3c" onPress={() => logout()} />
+            ) : (
+              <Button title="Entrar com Google" color="#4A6B69" onPress={() => logout()} />
+            )}
           </View>
         </Card>
 

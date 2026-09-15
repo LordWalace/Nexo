@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, ViewStyle, StyleProp } from 'react-native';
+import { Animated, ViewStyle, StyleProp, View } from 'react-native';
 import Svg, { Circle, Rect, Polygon } from 'react-native-svg';
 
 interface LogoGeometryProps {
@@ -9,72 +9,106 @@ interface LogoGeometryProps {
   animated?: boolean;
 }
 
-const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-
 export function LogoGeometry({
   size = 100,
   color = '#000',
   style,
   animated = false,
 }: LogoGeometryProps) {
-  const rotation = useRef(new Animated.Value(0)).current;
+  const triAnim = useRef(new Animated.Value(1)).current;
+  const circAnim = useRef(new Animated.Value(1)).current;
+  const sqAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (animated) {
+      triAnim.setValue(0);
+      circAnim.setValue(0);
+      sqAnim.setValue(0);
+
+      const createSequence = (target: Animated.Value) => 
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(target, { toValue: 1, duration: 400, useNativeDriver: true }),
+          ]),
+          Animated.delay(600),
+          Animated.timing(target, { toValue: 0, duration: 400, useNativeDriver: true }),
+        ]);
+
       Animated.loop(
-        Animated.timing(rotation, {
-          toValue: 1,
-          duration: 3000,
-          useNativeDriver: true,
-        })
+        Animated.sequence([
+          createSequence(triAnim),
+          createSequence(circAnim),
+          createSequence(sqAnim),
+        ])
       ).start();
     } else {
-      rotation.setValue(0);
+      triAnim.setValue(1);
+      circAnim.setValue(1);
+      sqAnim.setValue(1);
     }
-  }, [animated, rotation]);
+  }, [animated, triAnim, circAnim, sqAnim]);
 
-  const spin = rotation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
+  const getStyle = (animValue: Animated.Value) => ({
+    position: 'absolute' as const,
+    width: size,
+    height: size,
+    opacity: animValue,
+    transform: [
+      {
+        scale: animValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.5, 1],
+        }),
+      },
+    ],
   });
 
   return (
-    <AnimatedSvg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      style={[style, animated && { transform: [{ rotate: spin }] }]}
-    >
-      {/* Triângulo */}
-      <Polygon
-        points="50,15 85,70 15,70"
-        stroke={color}
-        strokeWidth="6"
-        fill="transparent"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      {/* Quadrado */}
-      <Rect
-        x="40"
-        y="30"
-        width="45"
-        height="45"
-        stroke={color}
-        strokeWidth="6"
-        fill="transparent"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      {/* Círculo */}
-      <Circle
-        cx="40"
-        cy="55"
-        r="22"
-        stroke={color}
-        strokeWidth="6"
-        fill="transparent"
-      />
-    </AnimatedSvg>
+    <View style={[style, { width: size, height: size }]}>
+      {/* Triângulo (Topo) */}
+      <Animated.View style={getStyle(triAnim)}>
+        <Svg width={size} height={size} viewBox="0 0 100 100">
+          <Polygon
+            points="50,15 65,41 35,41"
+            stroke={color}
+            strokeWidth="6"
+            fill="transparent"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        </Svg>
+      </Animated.View>
+
+      {/* Círculo (Inferior Esquerdo) */}
+      <Animated.View style={getStyle(circAnim)}>
+        <Svg width={size} height={size} viewBox="0 0 100 100">
+          <Circle
+            cx="25"
+            cy="75"
+            r="15"
+            stroke={color}
+            strokeWidth="6"
+            fill="transparent"
+          />
+        </Svg>
+      </Animated.View>
+
+      {/* Quadrado (Inferior Direito) */}
+      <Animated.View style={getStyle(sqAnim)}>
+        <Svg width={size} height={size} viewBox="0 0 100 100">
+          <Rect
+            x="60"
+            y="60"
+            width="30"
+            height="30"
+            stroke={color}
+            strokeWidth="6"
+            fill="transparent"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        </Svg>
+      </Animated.View>
+    </View>
   );
 }

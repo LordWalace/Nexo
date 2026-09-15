@@ -1,4 +1,4 @@
-# Nexo Monorepo
+# Nexo
 
 Bem-vindo ao **Nexo**, um aplicativo de gerenciamento completo e moderno.
 
