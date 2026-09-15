@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { saveEncryptedData, loadEncryptedData } from '../services/encryptedStorage';
 import * as Crypto from 'expo-crypto';
 import { scheduleActivityNotifications, cancelActivityNotifications, cancelRecurringGroupNotifications } from '../services/notifications';
+import { syncToFirestore, syncFromFirestore } from '../services/firebaseSyncService';
 
 export interface Activity {
   id: string;
@@ -73,15 +74,28 @@ export const useDataStore = create<DataState>((set, get) => ({
   history: [],
 
   loadAllData: async () => {
-    const activities = (await loadEncryptedData<Activity[]>('@nexo:activities')) || [];
-    const categories = (await loadEncryptedData<Category[]>('@nexo:categories')) || [];
-    const materials = (await loadEncryptedData<Material[]>('@nexo:materials')) || [];
-    const history = (await loadEncryptedData<HistorySession[]>('@nexo:history')) || [];
+    // Tenta carregar do Firestore primeiro (se online e logado)
+    let activities = await syncFromFirestore('activities');
+    let categories = await syncFromFirestore('categories');
+    let materials = await syncFromFirestore('materials');
+    let history = await syncFromFirestore('history');
+
+    // Se não encontrou no Firestore (ou falhou/offline), carrega do storage local
+    if (!activities) activities = (await loadEncryptedData<Activity[]>('@nexo:activities')) || [];
+    if (!categories) categories = (await loadEncryptedData<Category[]>('@nexo:categories')) || [];
+    if (!materials) materials = (await loadEncryptedData<Material[]>('@nexo:materials')) || [];
+    if (!history) history = (await loadEncryptedData<HistorySession[]>('@nexo:history')) || [];
+
     set({ activities, categories, materials, history });
+
+    // Salva localmente caso tenha vindo da nuvem para manter cache
+    saveEncryptedData('@nexo:activities', activities);
+    saveEncryptedData('@nexo:categories', categories);
+    saveEncryptedData('@nexo:materials', materials);
+    saveEncryptedData('@nexo:history', history);
   },
 
   addActivity: (activity) => {
-    // Calculate duration automatically if start and end are provided
     let durationMs = activity.durationMs;
     if (activity.startTime && activity.endTime) {
       durationMs = new Date(activity.endTime).getTime() - new Date(activity.startTime).getTime();
@@ -90,6 +104,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     const activities = [...get().activities, newActivity];
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     scheduleActivityNotifications(newActivity);
   },
   addActivities: (newActivities) => {
@@ -103,6 +118,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     const activities = [...get().activities, ...prepared];
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     prepared.forEach(act => scheduleActivityNotifications(act));
   },
   updateActivity: (id, data) => {
@@ -116,8 +132,8 @@ export const useDataStore = create<DataState>((set, get) => ({
     const activities = get().activities.map(a => a.id === id ? { ...a, ...data, durationMs } : a);
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     
-    // Reschedule if times changed
     if (data.startTime || data.endTime || data.deleted === true) {
       cancelActivityNotifications(id).then(() => {
         if (!data.deleted) {
@@ -131,18 +147,21 @@ export const useDataStore = create<DataState>((set, get) => ({
     const activities = get().activities.map(a => a.id === id ? { ...a, deleted: true } : a);
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     cancelActivityNotifications(id);
   },
   deleteRecurringGroup: (groupId) => {
     const activities = get().activities.map(a => a.recurringGroupId === groupId ? { ...a, deleted: true } : a);
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     cancelRecurringGroupNotifications(groupId);
   },
   recoverActivity: (id) => {
     const activities = get().activities.map(a => a.id === id ? { ...a, deleted: false } : a);
     set({ activities });
     saveEncryptedData('@nexo:activities', activities);
+    syncToFirestore('activities', activities);
     const recovered = get().activities.find(a => a.id === id);
     if (recovered) scheduleActivityNotifications(recovered);
   },
@@ -152,16 +171,19 @@ export const useDataStore = create<DataState>((set, get) => ({
     const categories = [...get().categories, newCategory];
     set({ categories });
     saveEncryptedData('@nexo:categories', categories);
+    syncToFirestore('categories', categories);
   },
   updateCategory: (id, data) => {
     const categories = get().categories.map(c => c.id === id ? { ...c, ...data } : c);
     set({ categories });
     saveEncryptedData('@nexo:categories', categories);
+    syncToFirestore('categories', categories);
   },
   deleteCategory: (id) => {
     const categories = get().categories.filter(c => c.id !== id);
     set({ categories });
     saveEncryptedData('@nexo:categories', categories);
+    syncToFirestore('categories', categories);
   },
 
   addMaterial: (material) => {
@@ -169,16 +191,19 @@ export const useDataStore = create<DataState>((set, get) => ({
     const materials = [...get().materials, newMaterial];
     set({ materials });
     saveEncryptedData('@nexo:materials', materials);
+    syncToFirestore('materials', materials);
   },
   updateMaterial: (id, data) => {
     const materials = get().materials.map(m => m.id === id ? { ...m, ...data } : m);
     set({ materials });
     saveEncryptedData('@nexo:materials', materials);
+    syncToFirestore('materials', materials);
   },
   deleteMaterial: (id) => {
     const materials = get().materials.filter(m => m.id !== id);
     set({ materials });
     saveEncryptedData('@nexo:materials', materials);
+    syncToFirestore('materials', materials);
   },
 
   startSession: (activityId) => {
@@ -190,6 +215,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     const history = [...get().history, newSession];
     set({ history });
     saveEncryptedData('@nexo:history', history);
+    syncToFirestore('history', history);
   },
   finishSession: (sessionId) => {
     const history = get().history.map(h => {
@@ -203,10 +229,12 @@ export const useDataStore = create<DataState>((set, get) => ({
     });
     set({ history });
     saveEncryptedData('@nexo:history', history);
+    syncToFirestore('history', history);
   },
   deleteHistorySession: (id) => {
     const history = get().history.filter(h => h.id !== id);
     set({ history });
     saveEncryptedData('@nexo:history', history);
+    syncToFirestore('history', history);
   }
 }));

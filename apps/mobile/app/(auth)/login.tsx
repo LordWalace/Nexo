@@ -1,43 +1,61 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../../src/stores/useAuthStore";
 import { useThemeStore } from "../../src/stores/themeStore";
 import { lightColors, darkColors } from "../../src/theme/colors";
+import { auth } from "../../src/config/firebase";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { setUserName } = useAuthStore();
+  const { setOfflineUser } = useAuthStore();
   const { theme } = useThemeStore();
   const colors = theme === "dark" ? darkColors : lightColors;
+  const [loading, setLoading] = useState(false);
 
+  // Aqui estamos forçando a URL do proxy do Expo para funcionar no Expo Go
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: "YOUR_GOOGLE_CLIENT_ID",
+    clientId: "270618831747-1ijsaof3ts0igrgbkj3eig97h0g03ceb.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
+    redirectUri: "https://auth.expo.io/@lordwalace/nexo"
   });
 
   useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
       if (id_token) {
-        handleGoogleLogin(id_token);
+        handleFirebaseSignIn(id_token);
       }
+    } else if (response?.type === "error") {
+      setLoading(false);
+      console.error(response.error);
+    } else if (response?.type === "dismiss") {
+      setLoading(false);
     }
   }, [response]);
 
-  const handleGoogleLogin = async (idToken: string) => {
+  const handleFirebaseSignIn = async (idToken: string) => {
     try {
-      setUserName("Usuário Google");
+      const credential = GoogleAuthProvider.credential(idToken);
+      await signInWithCredential(auth, credential);
     } catch (error) {
-      console.error(error);
+      console.error("Firebase Sign In Error:", error);
+      setLoading(false);
     }
   };
 
   const handleOffline = () => {
-    setUserName("Visitante");
+    setOfflineUser("Visitante");
+  };
+
+  const handleLoginPress = () => {
+    setLoading(true);
+    promptAsync();
   };
 
   return (
@@ -48,11 +66,11 @@ export default function LoginScreen() {
       </Text>
       
       <TouchableOpacity 
-        style={[styles.button, { backgroundColor: colors.primary }]}
-        disabled={!request}
-        onPress={() => promptAsync()}
+        style={[styles.button, { backgroundColor: colors.primary, opacity: (!request || loading) ? 0.7 : 1 }]}
+        disabled={!request || loading}
+        onPress={handleLoginPress}
       >
-        <Text style={styles.buttonText}>Entrar com Google</Text>
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar com Google</Text>}
       </TouchableOpacity>
       
       <TouchableOpacity onPress={handleOffline} style={styles.skipButton}>

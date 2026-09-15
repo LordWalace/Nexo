@@ -1,10 +1,12 @@
 import '@expo/metro-runtime';
 import { ExpoRoot } from 'expo-router';
 import { renderRootComponent } from 'expo-router/build/renderRootComponent';
+import React from 'react';
 
-const ctx = require.context('./app', true, /.*/);
+// Only load React component files (.js, .jsx, .ts, .tsx) to avoid crashing Expo Router with non-component files.
+const ctx = require.context('./app', true, /\.(js|jsx|ts|tsx)$/);
 
-export function App() {
+export default function App() {
   return <ExpoRoot context={ctx} />;
 }
 
